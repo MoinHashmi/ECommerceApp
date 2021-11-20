@@ -9,4 +9,5 @@
     <color name="white">#FFFFFFFF</color>
     <color name="demo_dark_transparent">#24000000</color>
     <color name="notification_badge_color">#FFFA3E3E</color>
+    <color name="off_white">#FFEFF0F7</color>
 </resources>

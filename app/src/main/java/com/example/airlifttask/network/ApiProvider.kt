@@ -24,9 +24,9 @@ interface ApiProvider {
                 val interceptor = HttpLoggingInterceptor()
                 interceptor.level = HttpLoggingInterceptor.Level.BODY
                 val client = OkHttpClient.Builder().apply {
-                    readTimeout(20, TimeUnit.SECONDS)
-                    writeTimeout(20, TimeUnit.SECONDS)
-                    connectTimeout(20, TimeUnit.SECONDS)
+                    readTimeout(30, TimeUnit.SECONDS)
+                    writeTimeout(30, TimeUnit.SECONDS)
+                    connectTimeout(30, TimeUnit.SECONDS)
                     addInterceptor(interceptor)
                     addInterceptor { chain ->
                         var request = chain.request()

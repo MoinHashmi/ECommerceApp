@@ -1,26 +1,33 @@
 package com.example.airlifttask.home.adapter
 
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
 import android.widget.ImageView
-import android.widget.LinearLayout
 import android.widget.TextView
+import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.example.airlifttask.R
+import com.example.airlifttask.cart.handler.CartHandler
+import com.example.airlifttask.cart.model.CartItem
+import com.example.airlifttask.cart.viewModel.MainActivityViewModel
 import com.example.airlifttask.home.model.Product
 import com.example.airlifttask.utils.Constants.CURRENCY
 
-class ProductAdapter:RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+class ProductAdapter(val mainViewModel: MainActivityViewModel) :RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     private var productList=ArrayList<Product>()
+    private var cartHandler=CartHandler.INSTANCE
 
     class ProductViewHolder(view: View): RecyclerView.ViewHolder(view) {
         val imageView:ImageView=view.findViewById(R.id.imageView)
         val textViewCurrency:TextView=view.findViewById(R.id.textViewCurrency)
         val textViewPrice:TextView=view.findViewById(R.id.textViewPrice)
         val textViewTitle:TextView=view.findViewById(R.id.textViewTitle)
+        val buttonAddToCart:Button=view.findViewById(R.id.buttonAddToCart)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
@@ -39,6 +46,16 @@ class ProductAdapter:RecyclerView.Adapter<RecyclerView.ViewHolder>() {
             holder.textViewCurrency.text = CURRENCY
             holder.textViewPrice.text=product.price.toString()
             holder.textViewTitle.text=product.title
+            holder.buttonAddToCart.setOnClickListener {
+                val item=CartItem(product.id,product.title,product.price,product.image,1)
+                cartHandler.addToCart(item)
+                mainViewModel.cartItemCount.postValue(cartHandler.getItemCount())
+
+                Log.i("CART_LIST"," cart list size is: ${cartHandler.cartItemList.size}")
+
+                mainViewModel.cartItemList.postValue(cartHandler.cartItemList)
+
+            }
         }
     }
 
