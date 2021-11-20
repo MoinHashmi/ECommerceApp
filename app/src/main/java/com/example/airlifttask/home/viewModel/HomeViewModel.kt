@@ -2,11 +2,12 @@ package com.example.airlifttask.home.viewModel
 
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.example.airlifttask.home.fragment.CategoryTabFragment
-import com.example.airlifttask.home.model.CategoryTab
+import androidx.lifecycle.viewModelScope
 import com.example.airlifttask.home.model.Product
 import com.example.airlifttask.network.ApiProvider
 import kotlinx.coroutines.*
+import okhttp3.Dispatcher
+import java.lang.Exception
 
 class HomeViewModel(): ViewModel() {
 
@@ -19,22 +20,24 @@ class HomeViewModel(): ViewModel() {
     }
 
     fun getProducts(){
-        isLoading.value=true
-        job= CoroutineScope(Dispatchers.IO).launch {
+        isLoading.postValue(true)
+
+        job= viewModelScope.launch(Dispatchers.IO) {
+
             val response=ApiProvider.getInstance().getProductList()
 
             if(response.isSuccessful){
 
                 response.body()?.let {
-                    productList.postValue(it)
-
+                    viewModelScope.launch(Dispatchers.Main) {
+                        productList.postValue(it)
+                        isLoading.postValue(false)
+                    }
                 }
-
 
             }else{
                 onError("Error : ${response.message()} ")
             }
-
         }
     }
 

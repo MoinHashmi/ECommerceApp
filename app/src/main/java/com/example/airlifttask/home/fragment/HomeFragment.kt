@@ -6,10 +6,12 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.viewpager2.widget.ViewPager2
+import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+import com.cooltechworks.views.shimmer.ShimmerRecyclerView
 import com.example.airlifttask.R
+import com.example.airlifttask.home.adapter.ProductAdapter
 import com.example.airlifttask.home.viewModel.HomeViewModel
-import com.google.android.material.tabs.TabLayout
 
 class HomeFragment : Fragment() {
 
@@ -18,8 +20,9 @@ class HomeFragment : Fragment() {
     }
 
     private lateinit var viewModel: HomeViewModel
-    private lateinit var tabLayout:TabLayout
-    private lateinit var viewPager:ViewPager2
+    private lateinit var recyclerView:RecyclerView
+    private lateinit var productAdapter: ProductAdapter
+    private lateinit var shimmerRecyclerView: ShimmerRecyclerView
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -34,13 +37,37 @@ class HomeFragment : Fragment() {
 
         initUI(view)
 
+        setupData(view)
+
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
     }
 
     private fun initUI(view: View) {
-        tabLayout=view.findViewById(R.id.tabLayout)
-        viewPager=view.findViewById(R.id.viewPager)
+        shimmerRecyclerView=view.findViewById(R.id.shimmerRecyclerView)
+        recyclerView=view.findViewById(R.id.recyclerView)
+
+        recyclerView.apply {
+            layoutManager=GridLayoutManager(this.context,2)
+            productAdapter= ProductAdapter()
+            adapter=productAdapter
+        }
+    }
+
+    private fun setupData(view: View) {
+
+        viewModel.isLoading.observe(viewLifecycleOwner,{
+            shimmerRecyclerView.visibility=if(it) View.VISIBLE else View.GONE
+        })
+
+        viewModel.productList.observe(viewLifecycleOwner,{
+            productAdapter.setProductList(it)
+        })
 
 
+        viewModel.getProducts()
     }
 
 
