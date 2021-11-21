@@ -13,10 +13,18 @@
         <action
             android:id="@+id/action_homeFragment_to_cartFragment"
             app:destination="@id/cartFragment" />
+        <action
+            android:id="@+id/action_homeFragment_to_productDetailFragment"
+            app:destination="@id/productDetailFragment" />
     </fragment>
     <fragment
         android:id="@+id/cartFragment"
         android:name="com.example.airlifttask.cart.CartFragment"
         android:label="cart_fragment"
         tools:layout="@layout/cart_fragment" />
+    <fragment
+        android:id="@+id/productDetailFragment"
+        android:name="com.example.airlifttask.product.ProductDetailFragment"
+        android:label="product_detail_fragment"
+        tools:layout="@layout/product_detail_fragment" />
 </navigation>

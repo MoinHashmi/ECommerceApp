@@ -1,5 +1,6 @@
 package com.example.airlifttask.home.adapter
 
+import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -7,7 +8,10 @@ import android.view.ViewGroup
 import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.cardview.widget.CardView
 import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.Navigation
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.example.airlifttask.R
@@ -18,6 +22,7 @@ import com.example.airlifttask.data.AppDatabase
 import com.example.airlifttask.data.CartItemDao
 import com.example.airlifttask.home.model.Product
 import com.example.airlifttask.utils.Constants.CURRENCY
+import java.io.Serializable
 
 class ProductAdapter(val mainViewModel: MainActivityViewModel) :RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
@@ -25,6 +30,7 @@ class ProductAdapter(val mainViewModel: MainActivityViewModel) :RecyclerView.Ada
     private var cartHandler=CartHandler.INSTANCE
 
     class ProductViewHolder(view: View): RecyclerView.ViewHolder(view) {
+        val product:CardView=view.findViewById(R.id.product)
         val imageView:ImageView=view.findViewById(R.id.imageView)
         val textViewCurrency:TextView=view.findViewById(R.id.textViewCurrency)
         val textViewPrice:TextView=view.findViewById(R.id.textViewPrice)
@@ -55,8 +61,19 @@ class ProductAdapter(val mainViewModel: MainActivityViewModel) :RecyclerView.Ada
                     mainViewModel.persistCartData(it.context, item)
                     mainViewModel.cartItemCount.postValue(cartHandler.getItemCount())
                     mainViewModel.cartItemList.postValue(cartHandler.cartItemList)
+
+//                    findNavController().navigate(R.id.action_homeFragment_to_productDetailFragment,)
                 }
 
+            }
+
+            holder.product.setOnClickListener {
+
+                val bundle=Bundle()
+
+                bundle.putSerializable("prod",product)
+
+                Navigation.findNavController(it).navigate(R.id.action_homeFragment_to_productDetailFragment,bundle)
             }
         }
     }
