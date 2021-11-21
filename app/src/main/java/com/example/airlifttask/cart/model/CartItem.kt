@@ -1,7 +1,16 @@
 package com.example.airlifttask.cart.model
 
+import androidx.room.ColumnInfo
+import androidx.room.Entity
+import androidx.room.PrimaryKey
 
-data class CartItem(var id:Int,var title:String,var price:Double,var image:String,var quantity:Int):
+@Entity
+data class CartItem(
+    @PrimaryKey var id:Int,
+    @ColumnInfo(name = "title")var title:String,
+    @ColumnInfo(name = "price")var price:Double,
+    @ColumnInfo(name = "image")var image:String,
+    @ColumnInfo(name = "quantity")var quantity:Int):
     BaseCartItem {
     override fun getProductPriceByQty(): Double {
         return price*quantity

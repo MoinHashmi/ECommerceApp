@@ -7,13 +7,17 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
+import android.widget.TextView
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.cooltechworks.views.shimmer.ShimmerRecyclerView
 import com.example.airlifttask.R
+import com.example.airlifttask.cart.adapter.CartAdapter
 import com.example.airlifttask.cart.handler.CartHandler
 import com.example.airlifttask.cart.viewModel.CartViewModel
 import com.example.airlifttask.cart.viewModel.MainActivityViewModel
+import com.example.airlifttask.utils.Constants.CURRENCY
 
 class CartFragment : Fragment() {
 
@@ -23,6 +27,9 @@ class CartFragment : Fragment() {
 
     private lateinit var viewModel: CartViewModel
     private lateinit var recyclerView: ShimmerRecyclerView
+    private lateinit var textViewTotal: TextView
+    private lateinit var textViewTotalItem: TextView
+    private lateinit var buttonCheckout: Button
     private lateinit var mainViewModel: MainActivityViewModel
     private lateinit var cartAdapter: CartAdapter
     private val cartHandler=CartHandler.INSTANCE
@@ -55,18 +62,27 @@ class CartFragment : Fragment() {
 
     private fun initUI(view: View) {
         recyclerView=view.findViewById(R.id.recyclerView)
+        textViewTotal=view.findViewById(R.id.textViewTotal)
+        textViewTotalItem=view.findViewById(R.id.textViewTotalItem)
+        buttonCheckout=view.findViewById(R.id.buttonCheckout)
+        cartAdapter= CartAdapter(mainViewModel,this)
 
         recyclerView.apply {
             layoutManager=LinearLayoutManager(this.context)
-            cartAdapter= CartAdapter(mainViewModel)
             adapter=cartAdapter
             isNestedScrollingEnabled=false
+        }
+
+        buttonCheckout.setOnClickListener {
+
         }
     }
 
     fun setupData() {
-        Log.i("CART_LIST"," cart list size is: ${cartHandler.cartItemList.size}")
         cartAdapter.setCartItemList(cartHandler.cartItemList)
+        textViewTotal.text="$CURRENCY ${cartHandler.getTotalAmount()}"
+        textViewTotalItem.text=" (${cartHandler.getItemCount()} items)"
+
     }
 
 }

@@ -11,7 +11,10 @@ import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.NavigationUI
 import com.example.airlifttask.cart.CartFragment
 import com.example.airlifttask.cart.handler.CartHandler
+import com.example.airlifttask.cart.model.CartItem
 import com.example.airlifttask.cart.viewModel.MainActivityViewModel
+import com.example.airlifttask.data.AppDatabase
+import com.example.airlifttask.data.CartItemDao
 import com.google.android.material.bottomnavigation.BottomNavigationItemView
 import com.google.android.material.bottomnavigation.BottomNavigationView
 
@@ -25,6 +28,8 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+        model.getDataPersist(this)
+
 
         setUpNavigation()
     }
@@ -41,7 +46,6 @@ class MainActivity : AppCompatActivity() {
         val badge = bottomNavigationView.getOrCreateBadge(R.id.cartFragment)
 
        model.cartItemCount.observe(this,{
-            Log.i("COUNT_OBSERVER","Data received")
             if (it>0){
                 badge.isVisible = true
                 badge.number = if (it>=99)99 else it
@@ -52,21 +56,10 @@ class MainActivity : AppCompatActivity() {
         })
 
         model.cartItemList.observe(this,{
-            Log.i("CART_LIST"," received data")
-//            CartFragment.newInstance().setupData()
+            if(CartFragment.newInstance().isAdded){
+                CartFragment.newInstance().setupData()
+            }
         })
-
-//        cartHandler.cartItemCount.observe(this,{
-//            Log.i("COUNT_OBSERVER","Data received")
-//            if (it>0){
-//                badge.isVisible = true
-//                badge.number = if (it>=99)99 else it
-//            }else{
-//                badge.isVisible = false
-//                badge.number = 0
-//            }
-//        })
-
 
     }
 }

@@ -14,6 +14,8 @@ import com.example.airlifttask.R
 import com.example.airlifttask.cart.handler.CartHandler
 import com.example.airlifttask.cart.model.CartItem
 import com.example.airlifttask.cart.viewModel.MainActivityViewModel
+import com.example.airlifttask.data.AppDatabase
+import com.example.airlifttask.data.CartItemDao
 import com.example.airlifttask.home.model.Product
 import com.example.airlifttask.utils.Constants.CURRENCY
 
@@ -48,12 +50,12 @@ class ProductAdapter(val mainViewModel: MainActivityViewModel) :RecyclerView.Ada
             holder.textViewTitle.text=product.title
             holder.buttonAddToCart.setOnClickListener {
                 val item=CartItem(product.id,product.title,product.price,product.image,1)
-                cartHandler.addToCart(item)
-                mainViewModel.cartItemCount.postValue(cartHandler.getItemCount())
-
-                Log.i("CART_LIST"," cart list size is: ${cartHandler.cartItemList.size}")
-
-                mainViewModel.cartItemList.postValue(cartHandler.cartItemList)
+                if(!cartHandler.hasItem(item)) {
+                    cartHandler.addToCart(item)
+                    mainViewModel.persistCartData(it.context, item)
+                    mainViewModel.cartItemCount.postValue(cartHandler.getItemCount())
+                    mainViewModel.cartItemList.postValue(cartHandler.cartItemList)
+                }
 
             }
         }

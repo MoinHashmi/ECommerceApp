@@ -1,4 +1,4 @@
-package com.example.airlifttask.cart
+package com.example.airlifttask.cart.adapter
 
 import android.view.LayoutInflater
 import android.view.View
@@ -9,13 +9,14 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.example.airlifttask.R
+import com.example.airlifttask.cart.CartFragment
 import com.example.airlifttask.cart.handler.CartHandler
 import com.example.airlifttask.cart.model.CartItem
 import com.example.airlifttask.cart.viewModel.MainActivityViewModel
 import com.example.airlifttask.utils.Constants.CURRENCY
 import kotlin.math.roundToInt
 
-class CartAdapter(val mainViewModel: MainActivityViewModel) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+class CartAdapter(val mainViewModel: MainActivityViewModel,val fragment: CartFragment) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     private var cartItemList=ArrayList<CartItem>()
     private val cartHandler=CartHandler.INSTANCE
@@ -52,30 +53,37 @@ class CartAdapter(val mainViewModel: MainActivityViewModel) : RecyclerView.Adapt
 
             holder.buttonDelete.setOnClickListener {
                 cartHandler.removeFromCart(item)
+                mainViewModel.removeItem(it.context,item)
                 setCartItemList(cartHandler.cartItemList)
                 mainViewModel.cartItemCount.postValue(cartHandler.getItemCount())
                 mainViewModel.cartItemList.postValue(cartHandler.cartItemList)
+                fragment.setupData()
             }
 
             holder.buttonAdd.setOnClickListener {
                 item.quantity+=1
                 cartHandler.addToCart(item)
+                mainViewModel.updateItem(it.context,item)
                 setCartItemList(cartHandler.cartItemList)
 
                 mainViewModel.cartItemCount.postValue(cartHandler.getItemCount())
                 mainViewModel.cartItemList.postValue(cartHandler.cartItemList)
+                fragment.setupData()
             }
 
             holder.buttonRemove.setOnClickListener {
                 if (item.quantity>1){
                     item.quantity-=1
                     cartHandler.addToCart(item)
+                    mainViewModel.updateItem(it.context,item)
                 }else{
                     cartHandler.removeFromCart(item)
+                    mainViewModel.removeItem(it.context,item)
                 }
                 setCartItemList(cartHandler.cartItemList)
                 mainViewModel.cartItemCount.postValue(cartHandler.getItemCount())
                 mainViewModel.cartItemList.postValue(cartHandler.cartItemList)
+                fragment.setupData()
             }
 
         }

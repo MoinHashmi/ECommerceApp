@@ -2,15 +2,18 @@ package com.example.airlifttask.home.fragment
 
 import androidx.lifecycle.ViewModelProvider
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.viewpager2.widget.ViewPager2
 import com.example.airlifttask.R
 import com.example.airlifttask.cart.handler.CartHandler
 import com.example.airlifttask.home.adapter.TabLayoutAdapter
 import com.example.airlifttask.home.viewModel.HomeViewModel
+import com.example.airlifttask.network.ApiProvider
 import com.facebook.shimmer.ShimmerFrameLayout
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
@@ -25,8 +28,6 @@ class HomeFragment : Fragment() {
     private lateinit var tabLayout:TabLayout
     private lateinit var viewPager:ViewPager2
     private lateinit var shimmerViewContainer: ShimmerFrameLayout
-
-    private var v:View?=null
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -70,8 +71,14 @@ class HomeFragment : Fragment() {
             }.attach()
         })
 
+        viewModel.errorMessage.observe(viewLifecycleOwner,{
+            Toast.makeText(view.context,it,Toast.LENGTH_LONG).show()
+        })
 
-        viewModel.getProducts()
+
+        if(ApiProvider.isNetworkConnected(view.context)){
+            viewModel.getProducts()
+        }
     }
 
 

@@ -1,5 +1,10 @@
 package com.example.airlifttask.network
 
+import android.content.Context
+import android.content.Context.CONNECTIVITY_SERVICE
+import android.net.ConnectivityManager
+import android.net.NetworkInfo
+import androidx.core.content.ContextCompat.getSystemService
 import com.example.airlifttask.home.model.Product
 import com.example.airlifttask.utils.Constants.BASE_URL
 import com.google.gson.Gson
@@ -52,6 +57,11 @@ interface ApiProvider {
                 apiProvider = retrofit.create(ApiProvider::class.java)
             }
             return apiProvider!!
+        }
+
+        fun isNetworkConnected(context: Context): Boolean {
+            val cm = context.getSystemService(CONNECTIVITY_SERVICE) as ConnectivityManager
+            return cm.isActiveNetworkMetered
         }
 
     }
